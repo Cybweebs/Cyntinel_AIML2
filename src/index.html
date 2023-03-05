@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Bootstrap Example</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.0/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-12 offset-md-3" style="margin: 0 5% 0 0;">
+        <h1 class="mb-3" style="font-weight: bold;">Sort Data</h1> <br>
+        <h5 class="mb-3">Enter the User ID of the Profile</h5>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Enter id of user" id="user_id">
+          <button class="btn btn-primary" type="button" id="submit-btn">Submit</button>
+        </div>
+        <div class="container">
+          <div class="result-container">
+            <table class="table">
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
+  <script>
+
+    fetch('http://localhost:6969/filter_score')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        // do something with the data
+      })
+      .catch(error => console.error(error));
+
+    // wait for DOM to be loaded
+    document.getElementById('submit-btn').addEventListener('click', function (event) {
+      event.preventDefault();
+
+      // get value of id_value
+      var id_value = document.getElementById('user_id').value;
+
+      // make POST request
+      fetch('http://localhost:6969/sort', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: id_value })
+      })
+
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+
+          // clear existing result container
+          var resultContainer = document.querySelector('.result-container');
+          resultContainer.innerHTML = '';
+
+          // create new table element
+          var resultTable = document.createElement('table');
+          resultTable.classList.add('table', 'table-striped');
+
+          // create table header row
+          var headerRow = document.createElement('tr');
+          var headerColumns = ['ID', 'Name', 'Gender', 'Who to date', 'Subscribed', 'Matches', 'Score'];
+          headerColumns.forEach(function (columnName) {
+            var headerColumn = document.createElement('th');
+            headerColumn.textContent = columnName;
+            headerRow.appendChild(headerColumn);
+          });
+          resultTable.appendChild(headerRow);
+
+          // create table data rows
+          data.forEach(function (item) {
+            var dataRow = document.createElement('tr');
+            var dataColumns = ['_id', 'name', 'gender', 'who_to_date', 'is_subscribed', 'matches', 'score'];
+            dataColumns.forEach(function (columnName) {
+              var dataColumn = document.createElement('td');
+              dataColumn.textContent = item[columnName];
+              dataRow.appendChild(dataColumn);
+            });
+            resultTable.appendChild(dataRow);
+          });
+
+          // append new table to result container
+          resultContainer.appendChild(resultTable);
+        })
+        .catch(error => window.alert("Not sufficient data!"));
+    });
+  </script>
+</body>
+
+</html>
