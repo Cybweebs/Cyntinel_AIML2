@@ -11,7 +11,6 @@ def calculate_score(row):
         'likes_dislikes_given_ratio': 10,
         'likes_dislikes_received_ratio': 10,
         'profile_completion': 20,
-        # 'face_detection': 10,
     }
 
     score = 0
@@ -52,11 +51,6 @@ def calculate_score(row):
     else:
         score -= 10  # else
 
-    # try:
-    #     if row['face_detection_probabilities'][0] > 80.0:
-    #         score += weights['face_detection']
-    # except:
-    #     score += 0
 
     return round(score, 2)
 
@@ -65,8 +59,6 @@ def score_main():
 
     # Read the CSV file into a Pandas dataframe
     df = pd.read_csv('../datasets/filter.csv')
-
-    # Define a function to calculate the score for each row
 
     # Add a new column to the dataframe with the calculated score for each row
     df['score'] = df.apply(calculate_score, axis=1)
@@ -81,6 +73,3 @@ def score_main():
     df[['_id', 'score']].to_csv('scores.csv', index=False)
 
     return True
-
-# print(score_main())
-# score_main()

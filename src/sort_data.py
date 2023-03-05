@@ -19,12 +19,14 @@ def sort_main(id_value):
     who_to_date = user['who_to_date'].values[0]
 
     # Filter users based on who_to_date value and match with gender
-    # users_filtered = users.loc[(users['gender'] == who_to_date) & (users['who_to_date'] == user['gender'].values[0])]
     users_filtered = users.loc[((users['gender'] == who_to_date) & (users['who_to_date'] == user['gender'].values[0]) & (users['is_subscribed'] == True) & (users['is_active'] == True)) | ((users['gender'] == who_to_date) & (users['who_to_date'] == user['gender'].values[0]) & (users['is_subscribed'] == False) & (users['is_active'] == True))]
+    
     # Sort and select the latest 100 users based on given criteria
     score = user['score'].values[0]
-    print(score)
-    users_sorted = users_filtered.loc[(users_filtered['score'] >= score - 10) & (users_filtered['score'] <= score + 10)]
+    if score > 60:
+        users_sorted = users_filtered.loc[(users_filtered['score'] >= score - 30) & (users_filtered['score'] <= score + 30)]
+    else:
+        users_sorted = users_filtered.loc[(users_filtered['score'] >= score - 10) & (users_filtered['score'] <= score + 10)]
 
     # Split users into new and old based on their createdAt timestamp
     today = datetime.datetime.now(datetime.timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
@@ -46,6 +48,5 @@ def sort_main(id_value):
     # Print the sorted DataFrame
     users_selected_json = users_selected.to_json(orient='records')
     users_selected_json = json.loads(users_selected_json)
-    print(users_selected_json)
     return users_selected_json
 

@@ -87,4 +87,3 @@ def filter_main():
     users.to_csv('../datasets/filter.csv', index=False)
 
     return True
-# filter_main()
